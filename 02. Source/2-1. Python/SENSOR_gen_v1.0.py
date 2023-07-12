@@ -9,7 +9,7 @@ conf = {
     'security.protocol': 'SASL_PLAINTEXT',
     'sasl.mechanisms': 'SCRAM-SHA-256',
     'sasl.username': 'brokersasl',
-    'sasl.password': 'brokersasl1demo!',
+    'sasl.password': '****',
 }
 
 p = Producer(conf)
