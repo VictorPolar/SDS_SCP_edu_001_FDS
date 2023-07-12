@@ -3,7 +3,26 @@ elasticsearch
 about
 elk01 / 192.168.0.10(9200) | 외부 IP : 123.41.0.139(9200) / 2023-06-28 22:31:27 (Asia/Seoul, GMT +09:00)
 서버 타입 Standard | esS1v4m8 (vCPU 4 | Memory 8G)
+
 Kibana 접속 정보 http://123.41.0.139:5601
+
+테스트 데이터 설명
+William Shakespeare의 전집이며 적합하게 필드로 파싱됩니다. 여기를 클릭하여 이 데이터 집합을 다운로드합니다. shakespeare.json.
+https://www.elastic.co/guide/kr/kibana/current/tutorial-load-dataset.html
+
+https://download.elastic.co/demos/kibana/gettingstarted/shakespeare.json
+{
+    "line_id": INT,
+    "play_name": "String",
+    "speech_number": INT,
+    "line_number": "String",
+    "speaker": "String",
+    "text_entry": "String",
+}
+
+curl -XDELETE '192.168.0.10:9200/Shakespeare?pretty' 
+curl -XPUT '192.168.0.10:9200/Shakespeare?pretty'
+curl -XPOST http://192.168.0.10:9200/Shakespeare/_bulk?pretty --data-binary @cShakespeare.json -H 'Content-Type: application/json' 
 
 BOF
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -80,7 +99,7 @@ BOF
 curl -X GET "192.168.0.10:9200/_cat/shards?v&pretty"
 
 8.도큐먼트 처리 상세
-
+c
  □ 검색방식
   ○ URL 방식 : 위 6-3에서 소개한 방식
   ○ Request Body 방식 : json 파일 형식으로 검색요건 제공

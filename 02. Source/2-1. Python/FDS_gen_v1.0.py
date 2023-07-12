@@ -9,7 +9,7 @@ conf = {
     'security.protocol': 'SASL_PLAINTEXT',
     'sasl.mechanisms': 'SCRAM-SHA-256',
     'sasl.username': 'brokersasl',
-    'sasl.password': '****',
+    'sasl.password': 'brokersasl1demo!',
 }
 
 p = Producer(conf)
@@ -38,7 +38,7 @@ def stream_data():
                     continue
                 payload = json.dumps(generate_data_point(id))
                 print(payload)
-                p.produce("FDS", key=f"{id}".encode(), value=payload.encode("utf-8"))
+                p.produce("test_FDS", key=f"{id}".encode(), value=payload.encode("utf-8"))
             p.flush()
             time.sleep(10)
     except KeyboardInterrupt:
