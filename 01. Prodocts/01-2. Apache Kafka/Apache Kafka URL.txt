@@ -1,0 +1,29 @@
+Kafka 참조자료 목록
+
+Samsung Cloud Platform Managed Service와 동일한 버전의 Kafka 오픈소스 다운로드 URL
+https://archive.apache.org/dist/kafka/3.1.0/kafka_2.13-3.1.0.tgz
+
+Kafka SASL/SCRAM 인증설정
+https://devidea.tistory.com/102
+
+Apache Flink 1.17.1버전의 Kafka connector jar파일 
+https://repo.maven.apache.org/maven2/org/apache/flink/flink-sql-connector-kafka/1.17.1/flink-sql-connector-kafka-1.17.1.jar
+
+Install and Configure Apache Kafka on Ubuntu (Akamai)
+https://www.linode.com/docs/guides/how-to-install-apache-kafka-on-ubuntu/
+
+There are 2 ways you can pass jaas conf to your kafka consumer.
+https://stackoverflow.com/questions/50684956/kafka-could-not-find-a-kafkaclient-entry-in-the-jaas-configuration-java
+
+If you are using kafka-client version greater than 0.10.2.1 you can set a property sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="USERNAME" password="PASSWORD";
+As your error message says you can set system property java.security.auth.login.config, For this you need to put your jaas config string to a file and give that path as value for above system property.
+
+jaas.conf
+KafkaClient {
+org.apache.kafka.common.security.plain.PlainLoginModule required
+serviceName="yourServiceName"
+username="userName"
+password="password";
+};
+
+EOF

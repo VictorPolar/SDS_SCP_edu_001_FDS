@@ -1,0 +1,120 @@
+elasticsearch 참조자료 목록
+
+Elasticsearch REST API 사용하기(인덱스, 도큐먼트 CRUD)
+https://twofootdog.tistory.com/55
+
+Elasticsearch CRUD 해보기
+https://velog.io/@jwpark06/Elasticsearch-CRUD-%ED%95%B4%EB%B3%B4%EA%B8%B0
+
+inflearn 무료 강의
+데이터 사이언스/데이터 분석
+ELK스택(ElasticSearch, Logstash, Kibana) 으로 데이터 분석대시보드 [강의ID 37069]
+https://www.inflearn.com/course/elk-%EC%8A%A4%ED%83%9D-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B6%84%EC%84%9D/dashboard
+github.com/minsuk-heo/BigData/tree/master
+
+
+
+Samsung Cloud Platform 사용자가이드
+
+□ 애플리케이션에서 클라이언트 드라이버를 통해 Elasticsearch (Managed) 연결하기 
+    애플리케이션은 드라이버(Driver)라고 하는 클라이언트 라이브러리를 통해 Elasticsearch (Managed)와 통신하며, 애플리케이션에 적합한 언어로 데이터베이스와의 모든 상호 작용을 처리합니다.
+    클라이언트 드라이버에 대한 자세한 내용은 다음 URL 페이지를 참고하세요.
+
+    https://www.elastic.co/guide/en/Elasticsearch (Managed)/client/index.html?blade=tw
+
+□ Java API의 경우 Transport Client를 이용해 연결할 수 있습니다. Transport Client는 transport 모듈을 사용하여 원격(remote)으로 Elasticsearch (Managed) 클러스터에 연결합니다.
+    Transport Client에 대한 자세한 내용은 다음 URL 페이지를 참고하세요.
+
+    https://www.elastic.co/guide/en/Elasticsearch (Managed)/client/java-api/7.9/transport-client.html#transport-client
+
+
+
+$ curl -XGET '123.41.0.13:9200/_cat/nodes?v'
+
+$ curl -XGET '192.168.0.10:9200/_cat/nodes?v'
+
+클러스터의 인덱스(Index) 생성
+$ curl -XGET 192.168.0.10:9200/index0709
+
+$ curl -XGET 192.168.0.10:9200/index0709?pretty
+
+
+클러스터의 노드 상태 확인
+$ curl -XGET '192.168.0.10:9200/_cat/nodes?v'
+
+클러스터의 인덱스(Index) 상태 확인
+$ curl -XGET '192.168.0.10:9200/_cat/indices/*?v&s=index&pretty'
+
+
+
+REST API를 통해 Elasticsearch (Managed)에 연결하기
+Elasticsearch (Managed)는 REST API를 이용하여 생성(Create), 읽기(Read), 갱신(Update), 삭제(Delete)의 기본적인 처리 및 관리 작업을 수행할 수 있습니다.
+
+REST API를 통해 Elasticsearch (Managed)를 관리하는 것에 대한 자세한 내용은 다음 URL 페이지를 참고하세요.
+
+https://www.elastic.co/guide/en/Elasticsearch (Managed)/reference/7.9/cluster-health.html
+
+다음은 REST API 사용하는 예제입니다.
+
+클러스터의 노드 상태 확인
+
+$ curl -XGET '10.142.0.4:9200/_cat/nodes?v'
+ip heap.percent ram.percent cpu load_1m load_5m load_15m node.role master name
+10.142.0.4 7 76 4 0.03 0.10 0.09 mi - instance-1
+10.142.0.2 7 72 2 0.00 0.02 0.05 di - es-master1
+10.142.0.6 5 72 1 0.00 0.01 0.05 mdi - instance-3
+10.142.0.5 9 72 1 0.05 0.04 0.06 mi * instance-2
+10.142.0.3 10 73 2 0.02 0.09 0.09 di - es-data1-kibana
+node.role(mi(master)/di(data)/mdi(master,data))와 master 표시(*)로 cluster 표현
+
+클러스터의 인덱스(Index) 상태 확인
+
+$ curl -XGET '10.142.0.4:9200/_cat/indices/*?v&s=index&pretty'
+health status index uuid pri rep docs.count docs.deleted store.size pri.store.size
+green open .kibana Eq06FfPhQyW6kA_fW-jKpw 1 1 1 0 6.3kb 3.1kb
+yellow open twitter TzwveKPTQB6bKvgUD_uRtw 3 2 0 0 780b 390b
+인덱스 생성
+
+$ curl -X PUT "10.142.0.4:9200/twitter" -H 'Content-Type: application/json' -d'
+{
+"settings" : {
+"index" : {
+"number_of_shards" : 3,
+"number_of_replicas" : 2
+}
+}
+}'
+도큐먼트(Document) 입력
+
+$ curl -X PUT "10.142.0.5:9200/twitter/_doc/1" -H 'Content-Type: application/json' -d'
+{
+"user" : "kimchy",
+"post_date" : "2009-11-15T14:12:12",
+"message" : "trying out Elasticsearch (Managed)"
+}'
+
+$ curl -X PUT "10.142.0.6:9200/twitter/_doc/2" -H 'Content-Type: application/json' -d'
+{
+"user" : "kimchy2",
+"post_date" : "2009-11-15T14:12:12",
+"message" : "trying out Elasticsearch (Managed)"
+}'
+샤드(Shard) 확인
+
+$ curl -X GET "10.142.0.6:9200/_cat/shards?v&pretty"
+index shard prirep state docs store ip node
+.kibana 0 p STARTED 1 3.1kb 10.142.0.3 es-data1-kibana
+.kibana 0 r STARTED 1 3.1kb 10.142.0.2 es-master1
+twitter 2 p STARTED 1 4.3kb 10.142.0.3 es-data1-kibana
+twitter 2 r STARTED 1 4.3kb 10.142.0.2 es-master1
+twitter 2 r UNASSIGNED
+twitter 1 r STARTED 0 130b 10.142.0.3 es-data1-kibana
+twitter 1 p STARTED 0 130b 10.142.0.2 es-master1
+twitter 1 r UNASSIGNED
+twitter 0 p STARTED 0 130b 10.142.0.3 es-data1-kibana
+twitter 0 r STARTED 0 130b 10.142.0.2 es-master1
+twitter 0 r UNASSIGNED 
+데이터노드가 2개, shard가 3개 인 경우 1개 shard는 unassigned 상태.
+아래 데이터 노드 1대 추가 후 모든 shard started 상태로 확인
+
+EOF

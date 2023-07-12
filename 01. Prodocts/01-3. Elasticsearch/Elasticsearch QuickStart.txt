@@ -1,0 +1,93 @@
+elasticsearch
+
+about
+elk01 / 192.168.0.10(9200) | 외부 IP : 123.41.0.139(9200) / 2023-06-28 22:31:27 (Asia/Seoul, GMT +09:00)
+서버 타입 Standard | esS1v4m8 (vCPU 4 | Memory 8G)
+Kibana 접속 정보 http://123.41.0.139:5601
+
+BOF
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+※ 작성 2023.07.09. 윤정훈 프로 
+
+※ Samsung Cloud Platform의 Elasticsearch 버전확인 필요
+
+※ localhost 주소는 내부 IP로 변경하여 사용
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+1.클러스터의 노드상태 확인
+ⓐ curl -XGET '192.168.0.10:9200/_cat/nodes?v'
+ⓑ curl -XGET http://192.168.0.10:9200/_cat/nodes?v
+
+2.클러스터의 인덱스(Index=Database) 상태(List) 확인
+ⓐ curl -XGET '192.168.0.10:9200/_cat/indices/*?v&s=index&pretty' 
+ⓑ curl -XGET http://192.168.0.10:9200/_cat/indices/*?v&s=index   (pretty 사용불가)
+ 
+3. 인덱스 생성
+ⓐ curl -XPUT '192.168.0.10:9200/customer?pretty'
+ⓑ curl -XPUT http://192.168.0.10:9200/customer_new?pretty
+
+4. 인덱스 조회
+ⓐ curl -XGET '192.168.0.10:9200/customer?pretty'
+ⓑ curl -XGET http://192.168.0.10:9200/customer_new?pretty
+
+5. 인덱스 삭제
+ⓐ curl -XDELETE '192.168.0.10:9200/customer?pretty' 
+ⓑ curl -XDELETE http://192.168.0.10:9200/customer_new?pretty
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+6-1.도큐먼트(Document) 직접입력
+ⓐ curl -XPOST '192.168.0.10:9200/customer_new/company/1?pretty' -H 'Content-type:application/json' -d '{"name":"Nora Kang"}'
+ⓐ curl -XPOST '192.168.0.10:9200/customer_new/company/2?pretty' -H 'Content-type:application/json' -d '{"name":"Victor Kang"}'
+ⓑ curl -XPOST http://192.168.0.10:9200/customer_new/company/3?pretty -H 'Content-type:application/json' -d '{"name":"Karl Kang"}'
+ⓑ curl -XPOST http://192.168.0.10:9200/customer_new/company/4?pretty -H 'Content-type:application/json' -d '{"name":"Leon Kang"}'
+
+6-2.파일(file)기반 도큐먼트 입력 
+ⓐ curl -XPOST '192.168.0.10:9200/customer_new/company/5?pretty' -H 'Content-type:application/json' -d @customer.json (파일 내부에 Data/doc 1개 일때)
+ⓑ curl -XPOST http://192.168.0.10:9200/customer_new/_bulk?pretty --data-binary @customer_2.json -H 'Content-Type: application/json' (파일 내부에 Data/doc 2개 이상일때)
+
+  ※ 여러개의 json 데이터가 각 index, type,  id가 지정되어 있는 파일
+
+@customer_2.json 파일 content (cat 명령어)
+
+{"index": { "_index": "customer_new", "_id": 6 } }
+{"name": "Noa Kang"}
+{"index": { "_index": "customer_new", "_id": 7 } }
+{"name": "Shin Kang"}
+
+
+6-3. 도큐먼트 조회(개별)
+ⓐ curl -XGET http://192.168.0.10:9200/customer_new/company/_search?q=name:Nora Kang&pretty    ※ ?pretty도 가능함
+ⓐ curl -XGET http://192.168.0.10:9200/customer_new/company/_search?q=name:Victor Kang
+
+6-4. 도큐먼트 조회(전체)
+ⓐ curl -XGET '192.168.0.10:9200/customer_new/company/_search?pretty'
+ⓑ curl -XGET http://192.168.0.10:9200/customer_new/company/_search?pretty
+
+
+6-5. 도큐먼트 조회(내부 필터링하여 항목만 조회)
+ⓐ curl -XGET http://192.168.0.10:9200/customer_new/company/1?pretty&filter_path=_source
+ⓐ curl -XGET http://192.168.0.10:9200/customer_new/company/1?pretty&filter_path=_source.name
+
+6-6. 도큐먼트 수정
+ⓑ curl -XPOST http://192.168.0.10:9200/customer_new/company/3/_update -H 'Content-Type: application/json' -d '{"doc":{"name":"July Kang"}}' 
+
+6-7. 도큐먼트 삭제
+ⓑ curl -XDELETE http://192.168.0.10:9200/customer_new/company/1
+
+7. 샤드(Shard) 확인
+curl -X GET "192.168.0.10:9200/_cat/shards?v&pretty"
+
+8.도큐먼트 처리 상세
+
+ □ 검색방식
+  ○ URL 방식 : 위 6-3에서 소개한 방식
+  ○ Request Body 방식 : json 파일 형식으로 검색요건 제공
+  ○ Query DSL 방식
+
+9. Type 처리 (멀티타입 지원안됨)
+    상세한 내용의 위 URL을 참조하시 바랍니다.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+EOF

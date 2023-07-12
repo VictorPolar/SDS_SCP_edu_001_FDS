@@ -1,0 +1,57 @@
+Kafka Quick Starter
+
+
+1. IP 및 Port 설정
+   111.111.111.111:9191 → 외부 IP의 경우
+     :외부에서 Samsung Cloud Platform의 Kafka 서비스에 접근하는 경우 이용
+
+     222.222.222.222:9091 → 내부 IP의 경우
+     :내부에서 Samsung Cloud Platform의 Kafka 서비스에 접근하는 경우 이용
+
+2. Standlone의 별도 Kafka 설치가 필요한 이유
+     아래에서 설명하는 Kafka Topic을 관리하기 위한 Kafka의 쉘스크립트를 활용하기 위함
+    
+3. Jaas.conf 파일 설정
+     Samsung Cloud Platform의 kafka 보안설정(SASL/SCRAM)에 필요
+
+4. xxx.properties 파일 설정
+   Samsung Cloud Platform의 kafka 보안설정(SASL/SCRAM)에 필요
+
+5. Kafka Topic 설정 및 처리 Commandline
+
+
+※ 사용용례 : IP환경과 보안설정에 따라 활용
+
+FDS 토픽에 정보를 Push (produce) 하기 ※ Port 주의
+./bin/kafka-console-producer.sh --broker-list 123.41.0.81:9191 --topic FDS --producer.config kafka_client.properties
+
+FDS 토픽에 정보를 Pull (consume) 하기
+./bin/kafka-console-consumer.sh --bootstrap-server 192.168.0.5:9091 --topic FDS --consumer.config kafka_client.properties
+
+testtopic 토픽을 생성 (create) 하기
+./bin/kafka-topics.sh --create --topic testtopic --bootstrap-server --bootstrap-server 192.168.0.5:9091
+
+생성된 모든 토픽을 조회 (list) 하기
+./bin/kafka-topics.sh --list --bootstrap-server 123.41.0.81:9191 --command-config kafka_client.properties
+
+<for kfkvm-001> 사설IP  ※공용IP 9191
+./bin/kafka-topics.sh --list --bootstrap-server 192.168.0.5:9091 --command-config kafka_client.properties
+./bin/kafka-topics.sh --create --topic FDS --bootstrap-server 192.168.0.5:9091 --command-config kafka_client.properties
+
+FDS 토픽의 내용을 조회 (describe) 하기
+./bin/kafka-topics.sh --describe --topic FDS --bootstrap-server 192.168.0.5:9091 --command-config kafka_client.properties
+
+FDS 토픽에 정보를 Pull (consume) 하기
+./bin/kafka-console-consumer.sh --bootstrap-server 192.168.0.5:9091 --topic FDS --consumer.config kafka_client.properties
+
+FDS 토픽에 정보를 Push (produce) 하기
+./bin/kafka-console-producer.sh --bootstrap-server 192.168.0.5:9091 --topic FDS --producer.config kafka_client.properties
+
+./bin/kafka-topics.sh --create --topic streams-plaintext-input --bootstrap-server 192.168.0.5:9091 --command-config kafka_client.properties
+./bin/kafka-console-consumer.sh --bootstrap-server 192.168.0.5:9091 --topic plaintext-input --consumer.config kafka_client.properties
+./bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic streams-plaintext-input
+./bin/kafka-console-consumer.sh --bootstrap-server 192.168.0.5:9091 --topic SENSOR --consumer.config kafka_client.properties
+./bin/kafka-run-class.sh org.apache.kafka.streams.examples.wordcount.WordCountDemo --bootstrap-server 192.168.0.5:9091 --command-config kafka_client.properties
+
+EOF
+

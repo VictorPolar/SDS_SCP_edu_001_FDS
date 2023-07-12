@@ -1,0 +1,13 @@
+Ubuntu & QickStart
+
+Linux - chown 명령어로 소유자 변경하는 방법 (국내 블로그)
+https://codechacha.com/ko/linux-chown/
+
+[PostgreSQL] 테이블 DDL 생성 쿼리문 (국내 블로그)
+https://blog.tadadakcode.com/13
+
+Python 2와 Python 3의 차이점
+https://www.ibm.com/docs/ko/cloud-paks/cp-security/1.10?topic=scripts-python-2-python-3-differences
+
+Where is the java.security file? (국내 블로그)
+https://mkyong.com/java/where-is-the-java-security-file/

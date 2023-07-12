@@ -1,0 +1,44 @@
+AI&MLOps Platform 참조자료 목록
+
+유튜버 한양남자님 (☆☆☆☆☆)
+Github URL : https://github.com/myoh0623/kubeflow.git   
+YouTube URL :https://www.youtube.com/watch?v=tDqatoU2fhM
+
+쿠버네티스의 머신러닝 툴킷, kubeflow! 국내 블로그 (☆☆☆☆)
+https://velog.io/@moey920/%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EC%9D%98-%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D-%ED%88%B4%ED%82%B7-kubeflow
+
+KServe 이 보다 더 쉬운 ML Model Serving 은 없다.(국내 블로그)
+https://devocean.sk.com/blog/techBoardDetail.do?ID=164093
+
+KServe로 하는 Model Serving 이해하기 (국내 블로그)
+https://mokpolar.tistory.com/27
+
+학습 모델 보기/저장하기/불러오기 (국내 블로그)
+https://tykimos.github.io/2017/06/10/Model_Save_Load/
+
+kubeflow pipeline 실습 (국내 블로그)
+https://velog.io/@baeyuna97/kubeflow-pipeline-%EC%8B%A4%EC%8A%B5 
+
+카카오 i 클라우드(Kakao i Cloud)의 Kubeflow 소개 및 Tutorial (☆☆☆)
+https://console.kakaoi.io/docs/posts/kubeflow/2023-04-01-kubeflow_ov/kubeflow_ov#kubeflow
+
+[Kubeflow] Kserve로 pytorch 모델 서빙하기 (국내 블로그)
+https://yangoos57.github.io/blog/mlops/kubeflow/Serving_torch_model_using_kserve/
+
+Kubeflow Kserve 설치 및 알아보기 (국내 블로그)
+https://seokii.tistory.com/211
+
+[Part.1] Image Classification on MLOps(국내 블로그)
+https://blog.kubwa.co.kr/part-1-image-classification-on-mlops-424625c4027c
+
+KServe Documentation Website
+- Getting Started with KServe
+https://kserve.github.io/website/0.9/get_started/
+- First InferenceService
+https://kserve.github.io/website/0.9/get_started/first_isvc/
+
+Predict Using MNIST Model Deployed In TensorFlow Serving  (KNIME Analytics Platform 기반 TensorFlow)
+https://hub.knime.com/jtyler/spaces/KNIME-Edge-Server-Workflows/latest/Example_Use_Cases/TensorFlow_Serving/Examples/Predict_Using_MNIST_Model_Deployed_In_TensorFlow_Serving~YlQI1p8_PnmXYEXa
+
+Mnist_784 Dataset
+https://datahub.io/machine-learning/mnist_784#data

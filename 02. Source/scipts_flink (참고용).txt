@@ -1,0 +1,118 @@
+docker-compose exec sql-client /opt/kafka-client/bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic TenMinPsgCnts --from-beginning
+
+/usr/local/flink/download
+
+
+CREATE TABLE Sensor_data_time (
+    sensor_id varchar(10),
+    temperature Integer,
+    status varchar(10),
+    event_time  TimeIndicatorTypeInfo()
+) WITH ( 
+    'connector' = 'filesystem',
+    'path' = '/usr/local/flink/download/sensor_data.json',
+    'format' = 'json'  
+);
+
+
+CREATE TABLE from_Sensor (
+    sensor_id varchar(10),
+    temperature Integer,
+    status varchar(10),
+    event_time varchar(13)
+) WITH ( 
+    'connector' = 'filesystem',
+    'path' = '/usr/local/flink/download/sensor_data.json',
+    'format' = 'json'  
+);
+
+
+select * from Sensor_data LIMIT 10;
+
+
+USE catalog hive;
+
+SELECT sensor_id, COUNT(*) AS cnt 
+FROM Sensor_data 
+WHERE temperature >100
+GROUP BY sensor_id,
+TUMBLE(event_time, INTERVAL '5' MINUTE) 
+;
+
+
+
+SELECT sensor_id, max(temperature) AS max_temp 
+FROM Sensor_data 
+WHERE temperature >100
+GROUP BY sensor_id;
+
+CREATE TABLE from_Sensor AS
+SELECT * FROM Sensor_data where temperature >100;
+
+
+sensor_id": "sensor-28", "temperature": 14, "status": "OK", "event_time": 1688475297449}
+
+
+
+Flink SQL> DESCRIBE Rides;
+root
+ |-- rideId: Long           // Ride ID (including two records, an input and an output)
+ |-- taxiId: Long           // Taxi ID 
+ |-- isStart: Boolean       // Start or end
+ |-- lon: Float             // Longitude
+ |-- lat: Float             // Latitude
+ |-- rideTime: TimeIndicatorTypeInfo(rowtime)     // Time
+ |-- psgCnt: Integer        // Number of passengers
+
+
+      key,              pickup_datetime, fare_amount,  pickup_datetime,       pickup_longitude,         pickup_latitude,     dropoff_longitude,        dropoff_latitude,     passenger_count
+ 24238194,    2015-05-07 19:52:06.0000003,7.5,    2015-05-07 19:52:06 UTC,-73.99981689453125,40.73835372924805,-73.99951171875,40.72321701049805,                  1
+
+
+{"sensor_id": "sensor-14", "temperature": 23, "status": "OK", "event_time": 1688475297446}
+{"sensor_id": "sensor-15", "temperature": 128, "status": "OK", "event_time": 1688475297446}
+{"sensor_id": "sensor-16", "temperature": 157, "status": "ERROR", "event_time": 1688475297447}
+{"sensor_id": "sensor-19", "temperature": 98, "status": "ERROR", "event_time": 1688475297447}
+{"sensor_id": "sensor-20", "temperature": 102, "status": "OK", "event_time": 1688475297447}
+{"sensor_id": "sensor-21", "temperature": 167, "status": "ERROR", "event_time": 1688475297447}
+{"sensor_id": "sensor-23", "temperature": 23, "status": "OK", "event_time": 1688475297448}
+{"sensor_id": "sensor-24", "temperature": 118, "status": "ERROR", "event_time": 1688475297448}
+{"sensor_id": "sensor-25", "temperature": 58, "status": "OK", "event_time": 1688475297448}
+{"sensor_id": "sensor-27", "temperature": 155, "status": "WARNING", "event_time": 1688475297449}
+{"sensor_id": "sensor-28", "temperature": 14, "status": "OK", "event_time": 1688475297449}
+{"sensor_id": "sensor-30", "temperature": 101, "status": "OK", "event_time": 1688475297449}
+{"sensor_id": "sensor-32", "temperature": 39, "status": "ERROR", "event_time": 1688475297449}
+{"sensor_id": "sensor-36", "temperature": 165, "status": "ERROR", "event_time": 1688475297449}
+{"sensor_id": "sensor-37", "temperature": 114, "status": "OK", "event_time": 1688475297450}
+{"sensor_id": "sensor-38", "temperature": 44, "status": "OK", "event_time": 1688475297450}
+{"sensor_id": "sensor-39", "temperature": 115, "status": "OK", "event_time": 1688475297450}
+{"sensor_id": "sensor-40", "temperature": 20, "status": "OK", "event_time": 1688475297450}
+{"sensor_id": "sensor-41", "temperature": 68, "status": "OK", "event_time": 1688475297450}
+{"sensor_id": "sensor-42", "temperature": 101, "status": "OK", "event_time": 1688475297450}
+{"sensor_id": "sensor-44", "temperature": 48, "status": "OK", "event_time": 1688475297450}
+{"sensor_id": "sensor-47", "temperature": 172, "status": "ERROR", "event_time": 1688475297451}
+{"sensor_id": "sensor-49", "temperature": 50, "status": "OK", "event_time": 1688475297451}
+{"sensor_id": "sensor-51", "temperature": 169, "status": "ERROR", "event_time": 1688475297451}
+{"sensor_id": "sensor-53", "temperature": 178, "status": "ERROR", "event_time": 1688475297451}
+
+   'connector' = 'kafka',
+                'topic' = 'SENSOR',
+                'properties.bootstrap.servers' = '192.168.0.5:9091',
+                'scan.startup.mode' = 'earliest-offset',
+                'format' = 'json',
+                'properties.security.protocol' = 'SASL_PLAINTEXT',
+                'properties.sasl.mechanism' = 'SCRAM-SHA-256',
+                'properties.sasl.jaas.config' = 'org.apache.kafka.common.security.plain.PlainLoginModule required username=\"brokersasl\" password=\"brokersasl1demo!\";'
+
+ .set_property("security.protocol", "SASL_PLAINTEXT") \
+    .set_property("sasl.mechanism", "PLAIN") \
+    .set_property("sasl.jaas.config", "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"username\" password=\"password\";")
+
+
+security.protocol=SASL_PLAINTEXT
+sasl.mechanism=SCRAM-SHA-256
+sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="brokersasl" password="brokersasl1demo!";
+
+
+'sasl.jaas.config': 'org.apache.kafka.common.security.plain.PlainLoginModule required username="your_username" password="your_password";'
+}

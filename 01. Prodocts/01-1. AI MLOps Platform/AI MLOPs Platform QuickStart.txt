@@ -1,0 +1,53 @@
+AI&MLOps Platform Quick Start
+
+[접속]
+1. SCP AI&MLOps Platform 상세화면의 좌측 상단 접속가이드 버튼 클릭
+2. 대시보드 로그인 정보확인/클릭 : https://123.41.0.131/mlops
+
+[신규 프로젝트 생성]
+1. Project 메뉴 > Project Management 화면 > +NEW PROJECT 클릭
+2. New Project 화면 > Project Name:[test****],
+                     Project Admin:[계정email주소],
+                     프로젝트 수행 기간설정 : (From/To)
+                               Resource Quota Configuration설정 : (CPU/Memory/...)   
+
+[PVC 추가]      
+1. Volumes 메뉴 > + NEW VOLUME 클릭
+2. New Volume 화면 > Name:[workspace****],
+                   Volume Size:[*0]
+                   Storage Class:[nfs-subdir-external-sc] 
+                   Access Mode:[ReadWriteMany]     
+
+[Notebook 추가]
+1. Notebooks 메뉴 > +NEW NOTEBOOK 클릭
+2. Name:[notebook****]
+3. default 값 설정
+4. CPU/RAM/GPU 설정 
+5. Data Volumes 추가> +ADD VOLUME 클릭
+6. Type:[Existing my volumes] > Name:[worksapce****] > Mount Point:[/home/jovyan/data-vol-1]
+7. LAUNCH 클릭
+
+[Notebook 시작]
+1. status 상태확인 [Stopped/Pending/Running] > Running 상태
+2. 우측 플러그 아이콘 활성화(검정색) 상태 확인  > 클릭
+3. 오류 메시지 발생 시 재시도 "upstream connect error or disconnect/reset before headers. reset reason: connection failure, transport failure reason: delayed connect error: 111"
+
+
+[Tensorboards 설정]
+1. Tensorboards 메뉴 > +New TensorBoard 클릭
+2. Name:[tensorboard****]
+3. PVC 선택(Radio 버튼) > PVC Name: [workspace****]
+4. Object Store Link: [logs\tb-****\] > CREATE 클릭
+5. 활성화(CONNECT → 청색) 상태 확인 후 클릭
+
+※ TBD 영역
+
+[Pipeline 설정]
+
+[Repository 설정]
+
+[Experiments (AutoML) 설정] Hyperparameter 튜닝
+
+[Job Monitoring 설정]
+
+[AI Starters 설정]

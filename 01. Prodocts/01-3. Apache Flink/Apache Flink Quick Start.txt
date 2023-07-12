@@ -1,0 +1,255 @@
+Apache Flink Quick Start
+
+
+1. 최신정보 (v1.17.1)
+   https://nightlies.apache.org/flink/flink-docs-stable/docs/try-flink/local_installation/
+
+2. 설치파일
+   https://flink.apache.org/downloads/
+   https://www.apache.org/dyn/closer.lua/flink/flink-1.17.1/flink-1.17.1-bin-scala_2.12.tgz
+
+3. 설치사양
+  
+     - VM설치: Samsung Cloud Platform VM 자원의 최소사양보다는 조금 더 넉넉하게, OS는 특별한 이유가 없다면 Ubuntu 최신버전으로 설치
+	        Standalone인 경우는 사실 Test 또는 Pilot 프로젝트 용도인 경우가 많아서 높은 사양 VM이 필요하지 않을 수 있음
+     
+     - Local PC 설치 : Ubuntu Linux를 WSL2 기반으로 설치
+   	https://www.lainyzine.com/ko/article/how-to-install-wsl2-and-use-linux-on-windows-10/
+
+    
+4. 운영환경 구성
+
+    - Java 11버전 설치 (☆중요☆: 현행 Apache Flink v1.17.1 과 호환성 유지를 위한 필수요건 )
+	Flink runs on all UNIX-like environments, i.e. Linux, Mac OS X, and Cygwin (for Windows). 
+	You need to have Java 11 installed. To check the Java version installed, type in your terminal:
+    
+    	java --version
+	openjdk 11.0.19 2023-04-18
+	OpenJDK Runtime Environment (build 11.0.19+7-post-Ubuntu-0ubuntu120.04.1)
+	OpenJDK 64-Bit Server VM (build 11.0.19+7-post-Ubuntu-0ubuntu120.04.1, mixed mode, sharing)
+
+
+    - Python 3.x버전 설치
+
+    	python3 --version
+	Python 3.8.10
+
+	참조 URL
+	https://nightlies.apache.org/flink/flink-docs-release-1.17/docs/dev/python/installation/
+
+	python 버전확인 (/usr/bin/ 디렉토리에서 명령어 실행)
+
+	ls /usr/bin/python*
+	
+	To satisfy the PyFlink requirement regarding the Python environment version, 
+	you can choose to soft link python to point to your python3 interpreter:
+
+	ln -s /usr/bin/python3 python
+
+   - flink-conf.yaml 설정
+	
+	VM환경에 설치되어 운영되는 경우, 대단히 ☆☆중요☆☆하고 아래 설정 필수
+
+	    설정변경 (주석마크 "#" 삭제 & IP 주소정보 변경: localhost → VM의 사설IP로 변경 또는 0.0.0.0 적용)
+
+		   jobmanager.rpc.address: 192.168.0.11
+		   jobmanager.bind-host: 0.0.0.0
+		   taskmanager.bind-host: 0.0.0.0
+		   taskmanager.host: 192.168.0.11
+		   rest.address: 192.168.0.11
+		   rest.bind-address: 0.0.0.0
+
+	    설정추가 
+		    blob.server.hostname:192.168.0.11
+
+	Localhost 환경에서는 변경될 사항 없음
+
+	Cluster 환경에서는 검토해야할 대상이 확대됨 (설치가이드 활용)
+    
+
+  - Kafka 접속에 필요한 설정
+
+	https://ngela.tistory.com/81 참조
+
+		   jaas.conf 파일 설정
+
+			jaas.conf 파일 내용보여주기 명령 (/usr/local/flink/ 디렉토리에서 명령어 실행)
+			cat jaas.conf
+
+			KafkaClient {
+ 			   org.apache.kafka.common.security.scram.ScramLoginModule required
+ 			   username="********"
+ 			   password="**********";
+			};
+	
+		  ./bashrc 파일에 jaas.conf 내용 반영 (=환경변수에 반영하기)
+			export KAFKA_OPTS="-Djava.security.auth.login.config=/usr/local/flink/jaas.conf"
+
+
+	Kafka Connector 설치
+		flink-sql-connector-kafka-1.17.1.jar
+		https://nightlies.apache.org/flink/flink-docs-release-1.17/docs/connectors/table/kafka/
+
+6. 개발환경 구성
+
+    - Python 기준
+            pyflink 최신버전 설치 : Python 코드로 Java 가상머신 활용
+
+	설치명령어 (Shell 환경에서 실행)
+	python -m pip install apache-flink==1.17.1
+
+    - Java 기준
+            Maven 방식으로 Build 환경 구성하고 POM.XML 파일에 의존성(Architype)반영 (Gradle도 지원)
+	https://nightlies.apache.org/flink/flink-docs-release-1.17/docs/connectors/table/kafka/
+
+	따라서 Maven 설치 필요
+	https://jjeongil.tistory.com/1995
+
+
+		Maven 설치확인 & 버전확인 명령어
+
+		mvn --version
+
+		Apache Maven 3.6.3
+		Maven home: /usr/share/maven
+		Java version: 11.0.19, vendor: Ubuntu, runtime: /usr/lib/jvm/java-11-openjdk-amd64
+		Default locale: en_US, platform encoding: UTF-8
+		OS name: "linux", version: "5.4.0-153-generic", arch: "amd64", family: "unix"
+
+		ⓐ OpenJDK 설치
+
+			sudo apt update
+			sudo apt install default-jdk
+
+		ⓑ Apache Maven 다운로드 (/tmp 디렉토리에 다운로드 명령어)
+			wget https://www-us.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz -P /tmp
+
+		ⓒ 압축해제 (/opt 디렉토리에 해제)
+			sudo tar xf /tmp/apache-maven-*.tar.gz -C /opt
+
+		ⓓ Maven 버전 및 업데이트 제어를 위해 Maven 설치 디렉토리를 가리키는 심볼릭 링크 메이븐 설정
+			새 버전이 릴리스되면 최신 버전의 압축을 풀고 해당 버전을 가리키도록 심볼 링크를 변경하여 Maven 설치를 업그레이드
+			sudo ln -s /opt/apache-maven-3.6.3 /opt/maven
+
+		ⓔ 환경 변수설정 (/etc/profile.d/ 디렉토리에 maven.sh 파일 생성 및 내용 반영)
+
+			sudo nano /etc/profile.d/maven.sh    (또는 sudo vim /etc/profile.d/maven.sh)
+
+			export JAVA_HOME=/usr/lib/jvm/default-java
+			export M2_HOME=/opt/maven
+			export MAVEN_HOME=/opt/maven
+			export PATH=${M2_HOME}/bin:${PATH}
+
+		ⓕ maven.sh 스크립트의 실행속성 변경
+			sudo chmod +x /etc/profile.d/maven.sh
+
+		ⓖ 환경변수 현행화
+			source /etc/profile.d/maven.sh
+
+		ⓗ 설치확인
+			mvn --version
+
+
+7. 설치파일 (Directory)
+	bin/ directory contains the flink binary as well as several bash scripts that manage various jobs and tasks
+	conf/ directory contains configuration files, including flink-conf.yaml
+	examples/ directory contains sample applications that can be used as is with Flink
+
+8. 시작하기
+
+	https://nightlies.apache.org/flink/flink-docs-release-1.17/docs/try-flink/local_installation/
+
+	클러스터 시작
+	./bin/start-cluster.sh
+
+	프로세스 조회
+	ps aux | grep flink
+
+	클러스터 종료
+	./bin/stop-cluster.sh
+
+	워드카운트 실행 (예제파일)
+	./bin/flink run examples/streaming/WordCount.jar
+
+	워드카운트 실행결과 로그
+	 tail log/flink-*-taskexecutor-*.out
+
+	Flink’s web UI 접속
+	http://localhost:8081/ 
+	http://***.***.***.***:8081/ 
+
+9. SQL기반 분석/처리 환경
+	sql-clinet.sh 실행	
+
+	$ pwd
+	/usr/local/flink
+	flk@flk:/usr/local/flink$ ./bin/sql-client.sh
+
+	종료시 "QUIT;" (대화형 SQL DDL/DML 환경과 유사함)
+
+EOF
+
+
+                                   ▒▓██▓██▒
+                               ▓████▒▒█▓▒▓███▓▒
+                            ▓███▓░░        ▒▒▒▓██▒  ▒
+                          ░██▒   ▒▒▓▓█▓▓▒░      ▒████
+                          ██▒         ░▒▓███▒    ▒█▒█▒
+                            ░▓█            ███   ▓░▒██
+                              ▓█       ▒▒▒▒▒▓██▓░▒░▓▓█
+                            █░ █   ▒▒░       ███▓▓█ ▒█▒▒▒
+                            ████░   ▒▓█▓      ██▒▒▒ ▓███▒
+                         ░▒█▓▓██       ▓█▒    ▓█▒▓██▓ ░█░
+                   ▓░▒▓████▒ ██         ▒█    █▓░▒█▒░▒█▒
+                  ███▓░██▓  ▓█           █   █▓ ▒▓█▓▓█▒
+                ░██▓  ░█░            █  █▒ ▒█████▓▒ ██▓░▒
+               ███░ ░ █░          ▓ ░█ █████▒░░    ░█░▓  ▓░
+              ██▓█ ▒▒▓▒          ▓███████▓░       ▒█▒ ▒▓ ▓██▓
+           ▒██▓ ▓█ █▓█       ░▒█████▓▓▒░         ██▒▒  █ ▒   ▓█▒
+           ▓█▓  ▓█ ██▓ ░▓▓▓▓▓▓▓▒              ▒██▓         ░█▒
+           ▓█    █ ▓███▓▒░              ░▓▓▓███▓        ▓▓ ░▒░ ▓█
+           ██▓    ██▒    ░▒▓▓███▓▓▓▓▓██████▓▒        ▓███  █
+          ▓███▒ ███   ░▓▓▒░░   ░▓████▓░                   ░▒ ▓ █▓ █
+          █▓▒▒▓▓██  ░▒▒░░░▒▒▒▒▓██▓░                                   ▓█
+          ██ ▓░▒█   ▓▓▓▓▒░░  ▒█▓       ▒▓▓██▓    ▓▒          ▒▒▓█
+          ▓█▓ ▓▒█  █▓░  ░▒▓▓██▒            ░▓█▒   ▒▒▒░▒▒▓█████▒█
+           ██░ ▓█▒█▒  ▒▓▓▒  ▓█                █░      ░░░░   ░█   █▒█▓
+           ▓█   ▒█▓   ░     █░                ▒█              █▓
+            █▓   ██         █░                 ▓▓        ▒█▓▓▓▒█░
+             █▓ ░▓██░       ▓▒                  ▓█▓▒░░░▒▓█░    ▒█        ▓
+              ██   ▓█▓░      ▒                    ░▒█▒██▒         ▓▓
+               ▓█▒   ▒█▓▒░                         ▒▒ █▒█▓▒▒░░▒█           █▓
+                ░██▒    ▒▓▓▒                     ▓██▓▒█▒ ░▓▓▓▓▒█▓
+                  ░▓██▒                          ▓░  ▒█▓█  ░░▒▒▒
+                      ▒▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░▓▓  ▓░▒█░
+
+    ______ _ _       _       _____  ____  _         _____ _ _            _  BETA
+   |  ____| (_)     | |     / ____|/ __ \| |       / ____| (_)          | |
+   | |__  | |_ _ __ | | __ | (___ | |  | | |      | |    | |_  ___ _ __ | |_
+   |  __| | | | '_ \| |/ /  \___ \| |  | | |      | |    | | |/ _ \ '_ \| __|
+   | |    | | | | | |   <   ____) | |__| | |____  | |____| | |  __/ | | | |_
+   |_|    |_|_|_| |_|_|\_\ |_____/ \___\_\______|  \_____|_|_|\___|_| |_|\__|
+
+        Welcome! Enter 'HELP;' to list all available commands. 'QUIT;' to exit.
+
+link SQL> HELP;
+The following commands are available:
+
+HELP                            Prints the available commands.
+QUIT/EXIT                       Quits the SQL CLI client.
+CLEAR                           Clears the current terminal.
+SET                             Sets a session configuration property. Syntax: "SET '<key>'='<value>';". Use "SET;" for listing all properties.
+RESET                           Resets a session configuration property. Syntax: "RESET '<key>';". Use "RESET;" for reset all session properties.
+INSERT INTO                     Inserts the results of a SQL SELECT query into a declared table sink.
+INSERT OVERWRITE                Inserts the results of a SQL SELECT query into a declared table sink and overwrite existing data.
+SELECT                          Executes a SQL SELECT query on the Flink cluster.
+EXPLAIN                         Describes the execution plan of a query or table with the given name.
+BEGIN STATEMENT SET             Begins a statement set. Syntax: "BEGIN STATEMENT SET;"
+END                             Ends a statement set. Syntax: "END;"
+ADD JAR                         Adds the specified jar file to the submitted jobs' classloader. Syntax: "ADD JAR '<path_to_filename>.jar'"
+REMOVE JAR                      Removes the specified jar file from the submitted jobs' classloader. Syntax: "REMOVE JAR '<path_to_filename>.jar'"
+SHOW JARS                       Shows the list of user-specified jar dependencies. This list is impacted by the --jar and --library startup options as well as the ADD/REMOVE JAR commands.
+
+Hint: Make sure that a statement ends with ";" for finalizing (multi-line) statements.
+You can also type any Flink SQL statement, please visit https://nightlies.apache.org/flink/flink-docs-stable/docs/dev/table/sql/overview/ for more details.
+
