@@ -26,23 +26,25 @@ Kafka Quick Starter
 < IP/Port : 192.168.0.5:9091  Topic : FDS >※ Port 주의→ 외부IP
 
 1.FDS 토픽의 내용을 조회 (describe) 하기
-./bin/kafka-topics.sh --describe --topic FDS --bootstrap-server 192.168.0.5:9091 --command-config kafka_client.properties
+./bin/kafka-topics.sh --describe --topic test_FDS --bootstrap-server 192.168.0.5:9091 --command-config kafka_client.properties
 
 2.FDS 토픽에 정보를 Pull (consume) 하기
-./bin/kafka-console-consumer.sh --bootstrap-server 192.168.0.5:9091 --topic FDS --consumer.config kafka_client.properties
+./bin/kafka-console-consumer.sh --bootstrap-server 192.168.0.5:9091 --topic test_FDS --consumer.config kafka_client.properties
 
 3.FDS 토픽에 정보를 Push (produce) 하기
-./bin/kafka-console-producer.sh --bootstrap-server 192.168.0.5:9091 --topic FDS --producer.config kafka_client.properties
+./bin/kafka-console-producer.sh --bootstrap-server 192.168.0.5:9091 --topic test_FDS --producer.config kafka_client.properties
 
 4.FDS 토픽 삭제하기 (delete) 하기
-./bin/kafka-topics.sh --delete --topic FDS --bootstrap-server 192.168.0.5:9091 --command-config kafka_client.properties
+./bin/kafka-topics.sh --delete --topic test_FDS --bootstrap-server 192.168.0.5:9091 --command-config kafka_client.properties
 
 5.FDS 토픽 생성하기 (create) 하기
-./bin/kafka-topics.sh --create --topic FDS --bootstrap-server 192.168.0.5:9091 --command-config kafka_client.properties
+./bin/kafka-topics.sh --create --topic test_FDS --bootstrap-server 192.168.0.5:9091 --command-config kafka_client.properties
 
 6.생성된 모든 토픽을 조회 (list) 하기
 ./bin/kafka-topics.sh --list --bootstrap-server 192.168.0.5:9091 --command-config kafka_client.properties
 
+
+./bin/kafka-console-consumer.sh --bootstrap-server 192.168.0.5:9091 --topic SENSOR --consumer.config kafka_client.properties
 
 
 < IP/Port : 123.41.0.81:9191   Topic : New_FDS > ※ Port 주의 → 사설IP

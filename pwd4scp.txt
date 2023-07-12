@@ -1,0 +1,157 @@
+
+root@flk:/# find . -name *java.security*
+./etc/java-11-openjdk/security/java.security
+./usr/lib/jvm/java-11-openjdk-amd64/legal/java.security.sasl
+./usr/lib/jvm/java-11-openjdk-amd64/legal/java.security.jgss
+./usr/lib/jvm/java-11-openjdk-amd64/conf/security/java.security
+
+
+
+Specifying the location of the configuration file
+This topic describes how the Java and .NET frameworks locate the Access Control configuration file.
+
+A sample login configuration file (named Login.conf) is provided in the %ENDECA_CONF%\etc directory ($ENDECA_CONF/etc on UNIX). You can modify this file (including changing the file name) and store it in any directory.
+
+How the Java framework finds the configuration file
+In a Java framework, JAAS finds the login configuration file by examining the value of the java.security.auth.login.config property within the Java JVM in which the Access Control System is running. If this property is not set, the system will look for a file named .java.login.config in the home directory of the user who started the JVM.
+
+How you set the java.security.auth.login.config property depends on the specifics of your application server. A common method to specify the configuration file is to use a JVM -Djava.security.auth.login.config command-ine argument, as in this example:
+
+java -Djava.security.auth.login.config=Login.conf weblogic.server
+A second method is to edit the JAVA_HOME/jre/lib/security/java.security file and add the name of the login configuration file, as in this Windows example:
+
+# Default login configuration file
+login.config.url.1=file:C:/EndecaProjects/SSL/Login.conf
+
+Note that even though the path is on Windows, you must use forward slashes because the path is actually a URL.
+
+Please consult your application server documentation for full details on how to set this property.
+
+How the .NET framework finds the configuration file
+The .NET Framework finds the login configuration file by examining the value of a registry setting, which is set by the Endeca installation program to the %ENDECA_CONF%\etc\Login.conf path.
+
+Oracle Endeca Platform Services Security Guide Version 6.1.3 · June 2012
+
+Copyright © 2003, 2012, Oracle and/or its affiliates. All rights reserved.
+
+Oracle logo
+
+
+
+
+vm1
+vm1demo!
+192 168 0 2
+123 41 0 34
+
+
+vm2
+vm2demo!
+192.168.0.4
+
+window1
+window1demo!
+192 168 0 3
+123 41 0 75
+
+IP주소
+121.167.204.29
+
+kafka 서버명
+kafkacluster 클러스터명
+
+akhq 계정
+akhq
+akhq1demo!
+8080 포트
+
+Zookeeper SASL 계정 zkpsasl / zkpsasl1demo! /2180 
+Broker SASL 계정 brokersasl / brokersasl1demo! /9091
+parameter PISA
+
+AKHQ
+192.168.0.8 9091
+192.168.0.8.8080
+123.41.0.135 8080
+
+Zookeeper/Broker
+192.168.0.5 ~ 7 (9091)
+123.41.0.81-82-136 (9191)
+Zookeeperport 2180
+
+
+Attention is all you need
+
+
+Apache flink
+flk-001
+root flk1demo!
+
+
+
+192.168.0.9
+123.41.0.138
+
+
+
+
+Apache flink 2
+flk1
+root flk1demo!
+
+flk1demo!
+
+IP
+192.168.0.11
+NAT IP
+123.41.0.140
+
+
+
+
+
+elasticsearch
+
+port 9200
+elk
+elkcluster
+
+
+PostgreSQL
+
+pgs1demo!
+
+PostgreSQL-DBaaS
+
+PostgreSQLnDBaaS 데이터베이스 명칭
+
+pgs 사용자명
+pgs1demo! 비밀번호
+
+pgsql-dbaas01 / 192.168.0.13(2866) | 외부 IP : 123.41.0.123(2866)
+123.41.0.123
+
+
+
+VM
+
+192.168.0.14
+NAT IP
+123.41.0.126
+
+bst-001
+bst1demo!
+
+
+
+kfkvm-001
+VM Kafka
+kfk1demo!
+
+192.168.0.17
+NAT IP
+123.41.0.129
+
+
+
+

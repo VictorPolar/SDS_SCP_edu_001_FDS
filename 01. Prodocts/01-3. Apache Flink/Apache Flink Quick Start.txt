@@ -189,8 +189,22 @@ Apache Flink Quick Start
 
 EOF
 
+https://docs.oracle.com/cd/E29542_01/apirefs.1111/e12048/pattern_recog.htm#CQLLR1531
 
-                                   ▒▓██▓██▒
+  select its.badItemId
+  from tkrfid_ItemTempStream 
+  MATCH_RECOGNIZE (
+      PARTITION BY itemId
+      MEASURES A.itemId as badItemId
+      PATTERN (A B* C)
+      DEFINE
+          A  AS  (A.temp >= 25),
+          B  AS  ((B.temp >= 25) and (to_timestamp(B.element_time) - to_timestamp(A.element_time) < INTERVAL "0 00:00:05.00" DAY TO SECOND)),
+          C  AS  (to_timestamp(C.element_time) - to_timestamp(A.element_time) >= INTERVAL "0 00:00:05.00" DAY TO SECOND)
+  ) as its
+
+ 
+                                  ▒▓██▓██▒
                                ▓████▒▒█▓▒▓███▓▒
                             ▓███▓░░        ▒▒▒▓██▒  ▒
                           ░██▒   ▒▒▓▓█▓▓▒░      ▒████

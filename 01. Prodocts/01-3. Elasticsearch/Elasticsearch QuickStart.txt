@@ -21,9 +21,9 @@ https://download.elastic.co/demos/kibana/gettingstarted/shakespeare.json
     "text_entry": "String",
 }
 
-curl -XDELETE '192.168.0.10:9200/Shakespeare?pretty' 
-curl -XPUT '192.168.0.10:9200/Shakespeare?pretty'
-curl -XPOST http://192.168.0.10:9200/Shakespeare/_bulk?pretty --data-binary @cShakespeare.json -H 'Content-Type: application/json' 
+curl -XDELETE '192.168.0.10:9200/shakespeare?pretty' 
+curl -XPUT '192.168.0.10:9200/shakespeare?pretty'
+curl -XPOST http://192.168.0.10:9200/shakespeare/_bulk?pretty --data-binary @shakespeare.json -H 'Content-Type: application/json' 
 
 BOF
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------
