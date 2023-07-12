@@ -17,7 +17,6 @@ SCP기반 비정형 데이터 처리 과정 교재 목차
 │  └─01-3. etc. Ubuntu-Database
 
 └─02. Source
-
     ├─2-1. Python
     
     └─2-2. Java
